@@ -9,7 +9,7 @@ config()
 connectToDb()
 
 app.use(express.json())
-app.use(cors(process.env.ALLOWED_CORS))
+app.use(cors())
 
 const authRouter = require('./routes/auth-router')
 const taskRouter = require('./routes/task-router')
