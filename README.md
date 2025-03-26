@@ -1,3 +1,5 @@
-ENV Set Up
+MONGO_URL=mongodb+srv://raiyan_nawaz:Raiyan_7890@cluster0.ewy8c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
-REACT_APP_API_URL = http://127.0.0.1:4000
+SECRET_KEY=MYFIRSTEVERPASSWORDWASRAIYANMD
+
+ALLOWED_CORS=http://127.0.0.1:3000
