@@ -17,7 +17,7 @@ const signUp = async (req, res) =>{
     }
 }
 
-const logIn = async (req, res) =>{
+const signIn = async (req, res) =>{
     try{
         let {email, password} = req.body;
 
@@ -35,7 +35,7 @@ const logIn = async (req, res) =>{
 
         let token = await response.generateToken()
 
-        res.status(200).json({message: 'Logged in successfull', token})
+        res.status(200).json({message: 'Sign in successfull', token})
 
     }
     catch(err){
@@ -43,4 +43,19 @@ const logIn = async (req, res) =>{
     }
 }
 
-module.exports = { signUp, logIn }
+const signOut = async (req, res) =>{
+    try{
+        let user = await User.findById(req._id)
+        user.tokens = user.tokens.filter(({token})=>
+            token !== req.token
+        );
+
+        await user.save()
+        res.status(200).json({message: 'Sign out successfull'})
+    }
+    catch(err){
+        res.status(404).json({message: err.message || 'Uncaught error'})
+    }
+}
+
+module.exports = { signUp, signIn, signOut }

@@ -18,6 +18,8 @@ const authMiddleware = async (req, res, next) =>{
 
         req._id = _id
 
+        req.token = token
+
         next()
     }
     catch(err){
