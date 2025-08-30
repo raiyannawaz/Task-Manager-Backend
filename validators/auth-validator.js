@@ -14,7 +14,13 @@ const signUpSchema = z.object({
     }, 'Email already exist'),
 
     password: z.string({required_error: 'Password is required'})
-    .min(8, {message: 'Password requires minimum 8 characters'})
+    .min(8, {message: 'Password requires minimum 8 characters'}),
+
+    confirmPassword: z.string({required_error: 'Confirm password is required'})
+    .min(8, {message: 'Confirm password requires minimum 8 characters'})
+}).refine((data)=> data.password === data.confirmPassword,{
+    message: 'Confirm password does not match',
+    path: ['confirmPassword']
 })
 
 const logInSchema = z.object({
@@ -22,6 +28,7 @@ const logInSchema = z.object({
     .email({message: 'Invalid email'}),
     
     password: z.string({required_error: 'Password is required'})
+    .min(8, {message: 'Password requires minimum 8 characters'})
 })
 
 module.exports = { signUpSchema, logInSchema }

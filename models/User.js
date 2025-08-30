@@ -16,9 +16,24 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    created_at: {
+    confirmPassword: {
+        type: String,
+        required: true
+    },
+    access: {
+        type: String,
+        enum: ['User', 'Admin'],
+        default: 'User'
+    },
+    imageUrl: {
+        type: String
+    },
+    createdAt: {
         type: Date,
         default: Date.now()
+    },
+    updatedAt: {
+        type: Date,
     },
     tokens: [
         {
@@ -26,7 +41,7 @@ const UserSchema = new Schema({
                 type: String,
                 required: true
             },
-            created_at: {
+            createdAt: {
                 type: Date,
                 default: Date.now()
             }
@@ -38,8 +53,10 @@ UserSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
         let salt = await genSalt(10)
         let hashPassword = await hash(this.password, salt)
+        let hashConfirmPassword = await hash(this.confirmPassword, salt)
 
-        this.password = await hashPassword
+        this.password = await hashPassword;
+        this.confirmPassword = await hashConfirmPassword
         next()
     }
 })

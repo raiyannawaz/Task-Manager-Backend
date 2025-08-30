@@ -57,7 +57,6 @@ const addTask = async (req, res) => {
         res.status(200).json({ message: 'Task created successfully' })
     }
     catch (err) {
-        console.log(err)
         res.status(404).json({ message: err.message || 'Uncaught error' })
     }
 }
@@ -82,10 +81,10 @@ const updateTask = async (req, res) => {
         let taskTitleExist = await Task.findOne({ title: req.body.title, user_id })
 
         if (taskTitleExist && taskTitleExist._id.toString() !== task_id.toString()) {
-            return res.status(400).json({ message: 'Task already exist re' })
+            return res.status(400).json({ message: 'Task already exist' })
         }
 
-        let newTask = { ...req.body, updated_at: Date.now() }
+        let newTask = { ...req.body, updatedAt: Date.now() }
         await Task.findByIdAndUpdate(task_id, newTask)
 
         res.status(200).json({ message: 'Task updated successfully' })
