@@ -1,46 +1,50 @@
+const { extname } = require('path')
+const { uploader } = require('./cloudinary')
 const multer = require('multer')
-const path = require('path');
-const cloudinary = require('../utils/cloudinary')
 
 // const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
+//   destination: function(req, file, cb){
 //     cb(null, 'uploads/')
 //   },
-//   filename: function (req, file, cb) {
-//     cb(
-//       null,
-//        ['jpeg', 'jpg', 'png', 'webp'].filter(format=>file.originalname.includes(format)).map(format=>file.originalname.replace(`.${format}`, '-')+ new Date().getTime()+`.${format}`)[0]
-//     );
-//   }, 
+//   filename: function(req, file, cb){
+//     let fileId = new Date().getTime()
+//     let fileFormat = extname(file.originalname.toLowerCase())
+//     let fileName = file.originalname.replace(`${fileFormat}`, '').slice(0, 12)
+    
+//     cb(null, `${fileName}-${fileId}${fileFormat}`)
+//   }
 // })
 
-const storage = multer.memoryStorage()
+const storage = multer.memoryStorage();
 
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|webp/
-  const extname = allowedTypes.test(path.extname(file.originalname).toLocaleLowerCase())
-  const mimetype = allowedTypes.test(file.mimetype)
+const fileFilter = (req, file, cb) =>{
+  let allowedFiles = /jpeg|jpg|png|webp/
 
-  if (extname && mimetype) {
-    cb(null, true)
+  let fileExt = allowedFiles.test(extname(file.originalname.toLowerCase()))
+  let fileMime = allowedFiles.test(file.mimetype.toLowerCase())
+
+  if(!fileExt || !fileMime){
+    cb(new Error('Invalid file'))
   }
-  else {
-    new Error('Only images allowed')
+  else{
+    cb(null, true)
   }
 }
 
-const upload = multer({ storage, fileFilter })
+const limits = { fileSize: 5 * 1024 * 1024 }
 
-const uploadImage = (fileBuffer, folder) =>{
-  return new Promise((resolve, reject)=>{
-    const stream = cloudinary.uploader.upload_stream(
-      { folder },
-      (err, result) =>{
-        if(err) return reject(err)
-        resolve(result)
-      }
-    )
-    stream.end(fileBuffer)
+const upload = multer({storage, fileFilter, limits})
+
+const uploadImage = async (file, folder) =>{
+  // let result = await uploader.upload(file, {folder})
+  // return result
+
+  return await new Promise((resolve, reject)=>{
+    uploader.upload_stream({folder}, 
+      (error, result)=>{
+        if(error) reject(error);
+        else resolve(result)
+      }).end(file)
   })
 }
 

@@ -33,22 +33,8 @@ const updateUser = async (req, res) => {
         let sameEmail = emailExist?.email === email
 
         if (req.file) {
-            // With Saving 
-            // const uploadImage = await cloudinary.uploader.upload(req.file.path, {
-            //     folder: 'user_profiles', use_filename: true,
-            //     unique_filename: false, overwrite: true
-            // })
-            // userUpdate.imageUrl = uploadImage.secure_url
-            // userUpdate.updatedAt = Date.now()
-
-            // await User.findByIdAndUpdate(req._id, userUpdate)
-            // res.status(200).json({ message: 'User updated' })
-            // With Saving 
-
-            // Without Saving 
-            const result = await uploadImage(req.file.buffer, 'Task_Manager/user_profiles')
-            userUpdate.imageUrl = result.secure_url;
-            // Without Saving 
+            const result = await uploadImage(req.file.buffer, '/Task_Manager/user_profiles')
+            userUpdate.imageUrl = result.secure_url
         }
         
         userUpdate.updatedAt = Date.now()
