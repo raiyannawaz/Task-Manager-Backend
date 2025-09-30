@@ -33,7 +33,7 @@ const updateUser = async (req, res) => {
         let sameEmail = emailExist?.email === email
 
         if (req.file) {
-            const result = await uploadImage(req.file.buffer, '/Task_Manager/user_profiles')
+            const result = await uploadImage(req.file.path, '/Task_Manager/user_profiles')
             userUpdate.imageUrl = result.secure_url
         }
         
